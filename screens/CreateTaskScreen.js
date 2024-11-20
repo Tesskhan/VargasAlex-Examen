@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Switch, TouchableOpacity } from 'react-native';
+import { db, collection, addDoc } from '../Firebase';  // Import Firestore methods
 
 export default function CreateTaskScreen({ navigation, route }) {
   const [taskTitle, setTaskTitle] = useState('');
@@ -21,12 +22,11 @@ export default function CreateTaskScreen({ navigation, route }) {
     setIsDateLimitEnabled(!isDateLimitEnabled);
   };
 
-  // Handle submitting the task
-  const handleSubmit = () => {
-    // Check if the task title is empty
+  // Handle submitting the task to Firebase Firestore
+  const handleSubmit = async () => {
     if (taskTitle.trim() === '') {
-      alert('Please enter a task title'); // Show an alert or some other form of validation
-      return; // Prevent further execution
+      alert('Please enter a task title');
+      return;
     }
 
     const newTask = {
@@ -34,13 +34,22 @@ export default function CreateTaskScreen({ navigation, route }) {
       date: isDateLimitEnabled ? dateInput : null,
     };
 
-    // Pass the new or updated task data back to HomeScreen
-    navigation.navigate('HomeScreen', { newTask });
+    try {
+      // Save task to Firestore
+      await addDoc(collection(db, 'tasks'), newTask);
+      alert('Task saved successfully!');
 
-    // Optionally reset the form after submitting
-    setTaskTitle('');
-    setDateInput('');
-    setIsDateLimitEnabled(false);
+      // Navigate to HomeScreen and pass the new task
+      navigation.navigate('HomeScreen', { newTask });
+
+      // Reset the form after submitting
+      setTaskTitle('');
+      setDateInput('');
+      setIsDateLimitEnabled(false);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      alert('Failed to save task!');
+    }
   };
 
   return (
