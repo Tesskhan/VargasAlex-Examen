@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
 
 export default function HomeScreen({ navigation, route }) {
   const [tasks, setTasks] = useState([]); // State to store tasks
@@ -9,19 +9,39 @@ export default function HomeScreen({ navigation, route }) {
     if (route.params?.newTask) {
       const newTask = route.params.newTask;
       // Add the new task to the list without overwriting the existing ones
-      setTasks((prevTasks) => [...prevTasks, newTask]); 
+      setTasks((prevTasks) => [...prevTasks, newTask]);
     }
   }, [route.params?.newTask]);
 
-  // Function to handle task deletion
+  // Function to handle task deletion with confirmation
   const handleDelete = (index) => {
-    setTasks((prevTasks) => prevTasks.filter((_, i) => i !== index));
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            setTasks((prevTasks) => prevTasks.filter((_, i) => i !== index));
+          }
+        }
+      ]
+    );
   };
 
-  // Empty function for the Edit button (no functionality)
-  const handleEdit = () => {
-    // Placeholder for future editing functionality
-    console.log('Edit button clicked - no functionality yet');
+  // Function to toggle task completion
+  const toggleTaskCompletion = (index) => {
+    setTasks((prevTasks) => {
+      // Create a new array and modify the task at the specific index
+      const updatedTasks = prevTasks.map((task, i) =>
+        i === index ? { ...task, completed: !task.completed } : task
+      );
+      return updatedTasks;  // Return the updated tasks array
+    });
   };
 
   return (
@@ -32,22 +52,45 @@ export default function HomeScreen({ navigation, route }) {
         {tasks.map((task, index) => (
           <View key={index} style={styles.card}>
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{task.title}</Text>
-              {task.date && <Text style={styles.cardDate}>Date: {task.date}</Text>}
+              {/* Switch for task completion, placed on the far left */}
+              <Switch
+                value={task.completed} // Whether the task is completed
+                onValueChange={() => toggleTaskCompletion(index)} // Toggle completion
+                style={styles.switch} // Add custom styling for the switch position
+              />
+              
+              <View style={styles.textContent}>
+                <Text
+                  style={[
+                    styles.cardTitle,
+                    task.completed && styles.completedText, // Apply strikethrough if completed
+                  ]}
+                >
+                  {task.title}
+                </Text>
+                {task.date && (
+                  <Text
+                    style={[
+                      styles.cardDate,
+                      task.completed && styles.completedText, // Apply strikethrough if completed
+                    ]}
+                  >
+                    Date: {task.date}
+                  </Text>
+                )}
+              </View>
             </View>
 
             <View style={styles.cardActions}>
-              {/* Edit Button - No functionality */}
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleEdit} // It does nothing when clicked
-              >
+              {/* Edit Button - Does nothing when clicked */}
+              <TouchableOpacity style={styles.actionButton}>
                 <Text style={styles.actionText}>Edit</Text>
               </TouchableOpacity>
 
+              {/* Delete Button */}
               <TouchableOpacity
                 style={styles.actionButton}
-                onPress={() => handleDelete(index)} // Delete Task
+                onPress={() => handleDelete(index)} // Trigger the delete confirmation
               >
                 <Text style={styles.actionText}>Delete</Text>
               </TouchableOpacity>
@@ -86,7 +129,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#f8f8f8',
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 15,
     marginBottom: 15,
     shadowColor: '#000',
@@ -96,9 +139,18 @@ const styles = StyleSheet.create({
     elevation: 3,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start', // Ensure that cards' content is aligned to the start
+    minHeight: 80, // Set a minimum height for each card
+  },
+  switch: {
+    marginRight: 10, // Space between switch and task text
   },
   cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  textContent: {
     flex: 1,
   },
   cardTitle: {
@@ -106,6 +158,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   cardDate: {
+    color: 'gray',
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
     color: 'gray',
   },
   cardActions: {

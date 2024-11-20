@@ -23,6 +23,12 @@ export default function CreateTaskScreen({ navigation, route }) {
 
   // Handle submitting the task
   const handleSubmit = () => {
+    // Check if the task title is empty
+    if (taskTitle.trim() === '') {
+      alert('Please enter a task title'); // Show an alert or some other form of validation
+      return; // Prevent further execution
+    }
+
     const newTask = {
       title: taskTitle,
       date: isDateLimitEnabled ? dateInput : null,
