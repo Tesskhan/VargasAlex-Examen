@@ -103,7 +103,7 @@ export default function HomeScreen({ navigation, route }) {
         style={styles.addButton}
         onPress={() => navigation.navigate('CreateTaskScreen')}
       >
-        <Text style={styles.addButtonText}>Add Something</Text>
+        <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
     </View>
   );
@@ -182,12 +182,15 @@ const styles = StyleSheet.create({
   addButton: {
     position: 'absolute',
     bottom: 20,
-    width: '90%',
-    backgroundColor: '#007bff',
+    right: 20, // Position it to the right of the screen
+    width: 60,
+    backgroundColor: '#D5A6F3', // Light purple color
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
-  },
+    alignItems: 'center', // Center text horizontally
+    justifyContent: 'center', // Center text vertically
+    height: 60, // Set a height to center the content vertically
+  },  
   addButtonText: {
     color: '#fff',
     fontSize: 18,

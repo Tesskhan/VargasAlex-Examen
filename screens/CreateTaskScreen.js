@@ -25,7 +25,7 @@ export default function CreateTaskScreen({ navigation, route }) {
   const handleSubmit = () => {
     // Check if the task title is empty
     if (taskTitle.trim() === '') {
-      alert('Please enter a task title'); // Show an alert or some other form of validation
+      alert('Please enter a task title');
       return; // Prevent further execution
     }
 
@@ -45,29 +45,30 @@ export default function CreateTaskScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text>{route.params?.taskToEdit ? 'Edit Task' : 'Create a New To-Do Task'}</Text>
-
-      {/* Task Title Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Enter task title"
-        value={taskTitle}
-        onChangeText={setTaskTitle}
-      />
-
-      {/* Switch for Date Limit */}
-      <View style={styles.switchContainer}>
-        <Text>Add a date limit?</Text>
-        <Switch
-          value={isDateLimitEnabled}
-          onValueChange={handleSwitchToggle}
+      {/* Settings at the top of the screen */}
+      <View style={styles.settingsContainer}>
+        {/* Task Title Input with Underline */}
+        <TextInput
+          style={styles.taskInput}
+          placeholder="Enter task title"
+          value={taskTitle}
+          onChangeText={setTaskTitle}
         />
+        
+        {/* Switch for Date Limit */}
+        <View style={styles.switchContainer}>
+          <Text>Add a date limit?</Text>
+          <Switch
+            value={isDateLimitEnabled}
+            onValueChange={handleSwitchToggle}
+          />
+        </View>
       </View>
 
       {/* Conditional Date Input */}
       {isDateLimitEnabled && (
         <TextInput
-          style={styles.input}
+          style={styles.dateInput}
           placeholder="Choose a date (DD/MM/YYYY)"
           value={dateInput}
           onChangeText={setDateInput}
@@ -88,30 +89,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
   },
-  input: {
-    width: '80%',
+  settingsContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 30,
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  taskInput: {
+    width: '100%',
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 8,
+    borderBottomWidth: 1, // Underline style
+    borderBottomColor: 'gray',
     marginBottom: 20,
-    paddingLeft: 10,
+    paddingLeft: 5,
+    fontSize: 18,
   },
   switchContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
     alignItems: 'center',
   },
+  dateInput: {
+    width: '100%',
+    height: 40,
+    borderBottomWidth: 1, // Underline style
+    borderBottomColor: 'gray',
+    marginBottom: 10,
+    paddingLeft: 5,
+    fontSize: 18,
+  },
   submitButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#800080', // Purple color
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 40,
     alignItems: 'center',
     marginTop: 20,
-    width: '80%',
+    width: '100%',
   },
   submitButtonText: {
     color: '#fff',
