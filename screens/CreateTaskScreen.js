@@ -23,7 +23,6 @@ export default function CreateTaskScreen({ navigation, route }) {
 
   // Handle submitting the task
   const handleSubmit = () => {
-    // Check if the task title is empty
     if (taskTitle.trim() === '') {
       alert('Please enter a task title');
       return; // Prevent further execution
@@ -34,10 +33,8 @@ export default function CreateTaskScreen({ navigation, route }) {
       date: isDateLimitEnabled ? dateInput : null,
     };
 
-    // Pass the new or updated task data back to HomeScreen
     navigation.navigate('HomeScreen', { newTask });
 
-    // Optionally reset the form after submitting
     setTaskTitle('');
     setDateInput('');
     setIsDateLimitEnabled(false);
@@ -54,7 +51,7 @@ export default function CreateTaskScreen({ navigation, route }) {
           value={taskTitle}
           onChangeText={setTaskTitle}
         />
-        
+
         {/* Switch for Date Limit */}
         <View style={styles.switchContainer}>
           <Text>Add a date limit?</Text>
@@ -110,7 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   switchContainer: {
-    marginBottom: 10,
+    marginBottom: 5, // Reduced margin to bring the switch closer to the input
     alignItems: 'center',
   },
   dateInput: {
